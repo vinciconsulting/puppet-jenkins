@@ -111,10 +111,14 @@ class jenkins::master(
         default => "ssl-cert",
   }
 
+  package { $openssl:
+    ensure => present,
+    alias => 'ssl-cert',
+  }
+
   $packages = [
     'python-babel',
     'python-sqlalchemy',  # devstack-gate
-    $openssl,
     'sqlite', # interact with devstack-gate DB
   ]
 
