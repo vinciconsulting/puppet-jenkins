@@ -41,6 +41,7 @@ class jenkins::job_builder (
         package { 'python-jenkins':
           ensure => present,
         }
+    }
   }
 
   vcsrepo { '/opt/jenkins_job_builder':
