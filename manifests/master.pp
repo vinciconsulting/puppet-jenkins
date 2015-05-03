@@ -53,10 +53,12 @@ class jenkins::master(
   }
   else {
         exec {'setup_jenkins_repo':
-            command => "sudo wget -O /etc/yum.repos.d/jenkins.repo http://pkg.jenkins-ci.org/redhat/jenkins.repo",
+            command => "wget -O /etc/yum.repos.d/jenkins.repo http://pkg.jenkins-ci.org/redhat/jenkins.repo",
+            path => "/usr/bin/",
         }
         exec {'install_jenkins_key':
-            command => "sudo rpm --import http://pkg.jenkins-ci.org/redhat/jenkins-ci.org.key",
+            command => "rpm --import http://pkg.jenkins-ci.org/redhat/jenkins-ci.org.key",
+            path => "/usr/bin/",
         }
   }
 
