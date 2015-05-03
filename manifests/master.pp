@@ -17,7 +17,7 @@ class jenkins::master(
   if ($operatingsystem !~ /Redhat|CentOS/) {
       include apt
   }
-  include apache
+#  include apache
 
   $nogroup = $operatingsystem ? {
         /Redhat|CentOS/  => "nobody",
@@ -68,18 +68,18 @@ class jenkins::master(
         }
   }
 
-  apache::vhost { $vhost_name:
-    port     => 443,
-    docroot  => '/var/www/html',
-    priority => '50',
-    template => 'jenkins/jenkins.vhost.erb',
-    ssl      => true,
-  }
-  if ! defined(A2mod['proxy_http']) {
-    a2mod { 'proxy_http':
-      ensure => present,
-    }
-  }
+#  apache::vhost { $vhost_name:
+#    port     => 443,
+#    docroot  => '/var/www/html',
+#    priority => '50',
+#    template => 'jenkins/jenkins.vhost.erb',
+#    ssl      => true,
+#  }
+#  if ! defined(A2mod['proxy_http']) {
+#    a2mod { 'proxy_http':
+#      ensure => present,
+#    }
+#  }
 
   if $ssl_cert_file_contents != '' {
     file { $ssl_cert_file:
@@ -87,7 +87,7 @@ class jenkins::master(
       group   => 'root',
       mode    => '0640',
       content => $ssl_cert_file_contents,
-      before  => Apache::Vhost[$vhost_name],
+#      before  => Apache::Vhost[$vhost_name],
     }
   }
 
@@ -98,7 +98,7 @@ class jenkins::master(
       mode    => '0640',
       content => $ssl_key_file_contents,
       require => Package['ssl-cert'],
-      before  => Apache::Vhost[$vhost_name],
+#      before  => Apache::Vhost[$vhost_name],
     }
   }
 
@@ -108,7 +108,7 @@ class jenkins::master(
       group   => 'root',
       mode    => '0640',
       content => $ssl_chain_file_contents,
-      before  => Apache::Vhost[$vhost_name],
+#      before  => Apache::Vhost[$vhost_name],
     }
   }
 
