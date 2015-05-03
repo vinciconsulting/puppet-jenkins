@@ -15,15 +15,32 @@ class jenkins::job_builder (
   # A lot of things need yaml, be conservative requiring this package to avoid
   # conflicts with other modules.
   if ! defined(Package['python-yaml']) {
-    package { 'python-yaml':
+
+    $pyaml = $operatingsystem ? {
+        /RedHat|CentOS/ => 'PyYAML',
+        default => 'python-yaml',
+    }
+
+    package { $pyaml:
       ensure => present,
+      alias => 'python-yaml',
     }
   }
 
   if ! defined(Package['python-jenkins']) {
-    package { 'python-jenkins':
-      ensure => present,
+
+    if ($operatingsystem =~ /RedHat|CentOS/) {
+
+        package { 'python-jenkins':
+          ensure => present,
+          provider => pip,
+        }
     }
+    else {
+
+        package { 'python-jenkins':
+          ensure => present,
+        }
   }
 
   vcsrepo { '/opt/jenkins_job_builder':
