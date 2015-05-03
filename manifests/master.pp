@@ -67,11 +67,6 @@ class jenkins::master(
     template => 'jenkins/jenkins.vhost.erb',
     ssl      => true,
   }
-  if ! defined(A2mod['rewrite']) {
-    a2mod { 'rewrite':
-      ensure => present,
-    }
-  }
   if ! defined(A2mod['proxy_http']) {
     a2mod { 'proxy_http':
       ensure => present,
