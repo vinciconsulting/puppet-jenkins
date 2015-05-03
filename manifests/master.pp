@@ -117,11 +117,18 @@ class jenkins::master(
     ensure => present,
   }
 
-  package { 'jenkins':
-    ensure  => present,
-    require => Apt::Source['jenkins'],
-  }
+    if ($operatingsystem !~ /Redhat|CentOS/) {
+        package { 'jenkins':
+            ensure  => present,
+            require => Apt::Source['jenkins'],
+        }
+    else {
 
+        package { 'jenkins':
+            ensure  => present,
+        }
+
+    }
   exec { 'update apt cache':
     subscribe   => File['/etc/apt/sources.list.d/jenkins.list'],
     refreshonly => true,
