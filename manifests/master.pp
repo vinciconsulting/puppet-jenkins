@@ -72,11 +72,6 @@ class jenkins::master(
       ensure => present,
     }
   }
-  if ! defined(A2mod['proxy']) {
-    a2mod { 'proxy':
-      ensure => present,
-    }
-  }
   if ! defined(A2mod['proxy_http']) {
     a2mod { 'proxy_http':
       ensure => present,
