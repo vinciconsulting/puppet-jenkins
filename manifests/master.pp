@@ -130,12 +130,14 @@ class jenkins::master(
         }
 
     }
-  exec { 'update apt cache':
-    subscribe   => File['/etc/apt/sources.list.d/jenkins.list'],
-    refreshonly => true,
-    path        => '/bin:/usr/bin',
-    command     => 'apt-get update',
-  }
+   if ($operatingsystem !~ /Redhat|CentOS/) {
+        exec { 'update apt cache':
+            subscribe   => File['/etc/apt/sources.list.d/jenkins.list'],
+            refreshonly => true,
+            path        => '/bin:/usr/bin',
+            command     => 'apt-get update',
+        }
+    }
 
   file { '/var/lib/jenkins':
     ensure  => directory,
