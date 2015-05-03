@@ -106,10 +106,15 @@ class jenkins::master(
     }
   }
 
+  $openssl = $operatingsystem ? {
+        /Redhat|CentOS/  => "openssl",
+        default => "ssl-cert",
+  }
+
   $packages = [
     'python-babel',
     'python-sqlalchemy',  # devstack-gate
-    'ssl-cert',
+    $openssl,
     'sqlite', # interact with devstack-gate DB
   ]
 
