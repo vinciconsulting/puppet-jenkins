@@ -122,6 +122,7 @@ class jenkins::master(
             ensure  => present,
             require => Apt::Source['jenkins'],
         }
+    }
     else {
 
         package { 'jenkins':
