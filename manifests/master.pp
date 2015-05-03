@@ -17,8 +17,13 @@ class jenkins::master(
   include apt
   include apache
 
-  package { 'openjdk-7-jre-headless':
+  $openjdk7 = $operatingsystem ? {
+        /Redhat|CentOS/  => "java-1.7.0-openjdk-headless",
+        default => "openjdk-7-jre-headless",
+  }
+  package { "$openjdk7":
     ensure => present,
+    alias => "openjdk-7-jre-headless",
   }
 
   package { 'openjdk-6-jre-headless':
