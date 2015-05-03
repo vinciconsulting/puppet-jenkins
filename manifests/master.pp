@@ -14,7 +14,9 @@ class jenkins::master(
   $jenkins_ssh_public_key = '',
 ) {
   include pip
-  include apt
+  if ($operatingsystem !~ /Redhat|CentOS/) {
+      include apt
+  }
   include apache
 
   $openjdk7 = $operatingsystem ? {
@@ -31,21 +33,31 @@ class jenkins::master(
     require => Package['openjdk-7-jre-headless'],
   }
 
-  #This key is at http://pkg.jenkins-ci.org/debian/jenkins-ci.org.key
-  apt::key { 'jenkins':
-    key        => 'D50582E6',
-    key_source => 'http://pkg.jenkins-ci.org/debian/jenkins-ci.org.key',
-  }
+  if ($operatingsystem !~ /Redhat|CentOS/) {
+      #This key is at http://pkg.jenkins-ci.org/debian/jenkins-ci.org.key
+      apt::key { 'jenkins':
+        key        => 'D50582E6',
+        key_source => 'http://pkg.jenkins-ci.org/debian/jenkins-ci.org.key',
+      }
 
-  apt::source { 'jenkins':
-    location    => 'http://pkg.jenkins-ci.org/debian-stable',
-    release     => 'binary/',
-    repos       => '',
-    require     => [
-      Apt::Key['jenkins'],
-      Package['openjdk-7-jre-headless'],
-    ],
-    include_src => false,
+      apt::source { 'jenkins':
+        location    => 'http://pkg.jenkins-ci.org/debian-stable',
+        release     => 'binary/',
+        repos       => '',
+        require     => [
+          Apt::Key['jenkins'],
+          Package['openjdk-7-jre-headless'],
+        ],
+        include_src => false,
+      }
+  }
+  else {
+        exec {'setup_jenkins_repo':
+            command => "sudo wget -O /etc/yum.repos.d/jenkins.repo http://pkg.jenkins-ci.org/redhat/jenkins.repo",
+        }
+        exec {'install_jenkins_key':
+            command => "sudo rpm --import http://pkg.jenkins-ci.org/redhat/jenkins-ci.org.key",
+        }
   }
 
   apache::vhost { $vhost_name:
